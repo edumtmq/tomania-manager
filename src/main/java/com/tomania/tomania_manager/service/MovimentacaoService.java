@@ -4,6 +4,7 @@ import com.tomania.tomania_manager.dto.MovimentacaoRequestDTO;
 import com.tomania.tomania_manager.dto.MovimentacaoResponseDTO;
 import com.tomania.tomania_manager.entity.Movimentacao;
 import com.tomania.tomania_manager.entity.Produto;
+import com.tomania.tomania_manager.enums.MotivoMovimentacao;
 import com.tomania.tomania_manager.enums.TipoMovimentacao;
 import com.tomania.tomania_manager.mapper.MovimentacaoMapper;
 import com.tomania.tomania_manager.repository.MovimentacaoRepository;
@@ -29,6 +30,8 @@ public class MovimentacaoService {
 
     @Transactional
     public MovimentacaoResponseDTO registrarMovimentacao(MovimentacaoRequestDTO movimentacaoRequestDTO) {
+        validarMotivoPorTipo(movimentacaoRequestDTO);
+
         Produto produto = produtoRepository.findById(movimentacaoRequestDTO.produtoId())
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
@@ -73,5 +76,27 @@ public class MovimentacaoService {
                 .stream()
                 .map(movimentacaoMapper::toMovimentacaoResponse)
                 .toList();
+    }
+
+    public void validarMotivoPorTipo(MovimentacaoRequestDTO dto){
+        if(dto.tipo() == TipoMovimentacao.ENTRADA){
+           if (
+                   dto.motivo() != MotivoMovimentacao.COMPRA &&
+                   dto.motivo() != MotivoMovimentacao.AJUSTE &&
+                   dto.motivo() != MotivoMovimentacao.BONIFICACAO
+           ){
+              throw new RuntimeException("Motivo inválido para movimentação de entrada");
+           }
+        }
+        if (dto.tipo() == TipoMovimentacao.SAIDA){
+            if(
+                    dto.motivo() != MotivoMovimentacao.PRODUCAO &&
+                    dto.motivo() != MotivoMovimentacao.PERDA &&
+                    dto.motivo() != MotivoMovimentacao.AJUSTE &&
+                    dto.motivo() != MotivoMovimentacao.VALIDADE
+            ){
+                throw new RuntimeException("Motivo inválido para movimentação de saida");
+            }
+        }
     }
 }

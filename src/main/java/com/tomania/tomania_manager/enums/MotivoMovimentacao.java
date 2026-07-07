@@ -6,5 +6,5 @@ public enum MotivoMovimentacao {
     PERDA,
     VALIDADE,
     AJUSTE,
-    DEVOLUCAO
+    BONIFICACAO
 }
