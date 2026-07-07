@@ -11,6 +11,8 @@ import com.tomania.tomania_manager.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MovimentacaoService {
 
@@ -49,5 +51,12 @@ public class MovimentacaoService {
         return movimentacaoMapper.toMovimentacaoResponse(movimentacaoSalva);
     }
 
+//    -> Lista movimentações
+    public List<MovimentacaoResponseDTO> listarMovimentacoes() {
+        return movimentacaoRepository.findAll()
+                .stream()
+                .map(movimentacaoMapper::toMovimentacaoResponse)
+                .toList();
+    }
 
 }
