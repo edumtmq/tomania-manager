@@ -25,4 +25,9 @@ public class MovimentacaoController {
     public List<MovimentacaoResponseDTO> listarMovimentacoes(){
         return movimentacaoService.listarMovimentacoes();
     }
+
+    @GetMapping("/{id}")
+    public MovimentacaoResponseDTO buscarMovimentacaoPorId(@PathVariable Integer id){
+        return movimentacaoService.buscarMovimentacaoPorId(id);
+    }
 }

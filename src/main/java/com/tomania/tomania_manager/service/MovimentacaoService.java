@@ -59,4 +59,12 @@ public class MovimentacaoService {
                 .toList();
     }
 
+//    -> buscar movimentações por id
+    public MovimentacaoResponseDTO buscarMovimentacaoPorId(Integer id) {
+        Movimentacao movimentacao = movimentacaoRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Movimentação não encontrada"));
+
+        return movimentacaoMapper.toMovimentacaoResponse(movimentacao);
+    }
+
 }

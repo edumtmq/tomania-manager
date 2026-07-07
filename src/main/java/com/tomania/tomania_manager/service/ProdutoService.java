@@ -36,7 +36,7 @@ public class ProdutoService {
     }
 //  -> Buscar produto por Id
     public ProdutoResponseDTO buscarProdutoPorId(Integer id){
-        Produto produto=  produtoRepository.findById(id).orElseThrow(() ->
+        Produto produto = produtoRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Produto não encontrado"));
 
         return produtoMapper.toProdutoResponse(produto);
