@@ -67,4 +67,11 @@ public class MovimentacaoService {
         return movimentacaoMapper.toMovimentacaoResponse(movimentacao);
     }
 
+
+    public List<MovimentacaoResponseDTO> listarMovimentacoesPorProduto(Integer produtoId) {
+        return movimentacaoRepository.findByProduto_Id(produtoId)
+                .stream()
+                .map(movimentacaoMapper::toMovimentacaoResponse)
+                .toList();
+    }
 }

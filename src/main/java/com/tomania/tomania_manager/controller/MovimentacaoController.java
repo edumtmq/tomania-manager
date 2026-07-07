@@ -30,4 +30,9 @@ public class MovimentacaoController {
     public MovimentacaoResponseDTO buscarMovimentacaoPorId(@PathVariable Integer id){
         return movimentacaoService.buscarMovimentacaoPorId(id);
     }
+
+    @GetMapping("/produto/{produtoId}")
+    public List<MovimentacaoResponseDTO> listarMovimentacoesPorProduto(@PathVariable Integer produtoId) {
+        return movimentacaoService.listarMovimentacoesPorProduto(produtoId);
+    }
 }
