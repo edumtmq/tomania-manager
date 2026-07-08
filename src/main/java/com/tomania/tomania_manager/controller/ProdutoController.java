@@ -42,6 +42,11 @@ public class ProdutoController {
         return produtoService.atualizarProduto(id, produtoDTO);
     }
 
+    @PatchMapping("/{id}/ativar")
+    public ProdutoResponseDTO ativarProduto(@PathVariable Integer id){
+        return produtoService.ativarProduto(id);
+    }
+
     @DeleteMapping("/{id}")
     public ProdutoResponseDTO inativarProduto(@PathVariable Integer id){
         return produtoService.inativarProduto(id);
