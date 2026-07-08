@@ -122,4 +122,11 @@ public class MovimentacaoService {
                 )
                 .toList();
     }
+
+    public List<MovimentacaoResponseDTO> listarPorTipo(TipoMovimentacao tipo) {
+        return movimentacaoRepository.findByTipo(tipo)
+                .stream()
+                .map(movimentacaoMapper::toMovimentacaoResponse)
+                .toList();
+    }
 }

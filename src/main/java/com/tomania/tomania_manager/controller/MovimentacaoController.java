@@ -3,6 +3,7 @@ package com.tomania.tomania_manager.controller;
 import com.tomania.tomania_manager.dto.EntradaLoteRequestDTO;
 import com.tomania.tomania_manager.dto.MovimentacaoRequestDTO;
 import com.tomania.tomania_manager.dto.MovimentacaoResponseDTO;
+import com.tomania.tomania_manager.enums.TipoMovimentacao;
 import com.tomania.tomania_manager.service.MovimentacaoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +41,10 @@ public class MovimentacaoController {
     @GetMapping("/produto/{produtoId}")
     public List<MovimentacaoResponseDTO> listarMovimentacoesPorProduto(@PathVariable Integer produtoId) {
         return movimentacaoService.listarMovimentacoesPorProduto(produtoId);
+    }
+
+    @GetMapping("/tipo/{tipo}")
+    public List<MovimentacaoResponseDTO> listarMovimentacoesPorTipo(@PathVariable TipoMovimentacao tipo) {
+        return movimentacaoService.listarPorTipo(tipo);
     }
 }
