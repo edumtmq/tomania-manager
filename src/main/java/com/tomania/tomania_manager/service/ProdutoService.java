@@ -54,5 +54,14 @@ public class ProdutoService {
         return produtoMapper.toProdutoResponse(produtoSalvo);
     }
 
+//     -> Inativar produto
+    public ProdutoResponseDTO inativarProduto(Integer id){
+        Produto produto = produtoRepository.findById(id).orElseThrow(() ->
+            new ProdutoNaoEncontradoException("Produto não encontrado"));
+
+        produto.setAtivo(false);
+        produtoRepository.save(produto);
+        return produtoMapper.toProdutoResponse(produto);
+    }
 
 }
