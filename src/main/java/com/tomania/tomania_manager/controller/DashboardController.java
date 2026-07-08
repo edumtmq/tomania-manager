@@ -1,6 +1,7 @@
 package com.tomania.tomania_manager.controller;
 
 import com.tomania.tomania_manager.dto.DashboardResumoDTO;
+import com.tomania.tomania_manager.dto.MovimentacaoResponseDTO;
 import com.tomania.tomania_manager.dto.ProdutoResponseDTO;
 import com.tomania.tomania_manager.service.DashboardService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,13 @@ public class DashboardController {
     }
 
     @GetMapping("/produtos-situacao")
-    public List<ProdutoResponseDTO> ListarProdutosSituacao() {
+    public List<ProdutoResponseDTO> listarProdutosSituacao() {
         return dashboardService.listarProdutosSituacao();
+    }
+
+    @GetMapping("/movimentacoes-recentes")
+    public List<MovimentacaoResponseDTO> listarMovimentacoesRecentes() {
+        return dashboardService.listarMovimentacoesRecentes();
     }
 
 }

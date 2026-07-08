@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Integer> {
 
-
     List<Movimentacao> findByProduto_Id(Integer produtoId);
 
+    List<Movimentacao> findTop5ByOrderByDataMovimentacaoDesc();
 
 
 }
