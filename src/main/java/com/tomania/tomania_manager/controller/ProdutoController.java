@@ -31,6 +31,12 @@ public class ProdutoController {
         return produtoService.buscarProdutoPorId(id);
     }
 
+    @PutMapping("/{id}")
+    public ProdutoResponseDTO atualizarProduto(@PathVariable Integer id,
+                                               @RequestBody @Valid ProdutoRequestDTO produtoDTO){
+        return produtoService.atualizarProduto(id, produtoDTO);
+    }
+
 
 
 

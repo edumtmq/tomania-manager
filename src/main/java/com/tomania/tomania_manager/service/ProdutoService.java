@@ -42,7 +42,17 @@ public class ProdutoService {
 
         return produtoMapper.toProdutoResponse(produto);
     }
+// -> Atualizar produto
+    public ProdutoResponseDTO atualizarProduto(Integer id, ProdutoRequestDTO produtoDTO){
+        Produto produto = produtoRepository.findById(id).orElseThrow(() ->
+                new ProdutoNaoEncontradoException("Produto não encontrado"));
 
+        produto.setNome(produtoDTO.nome());
+        produto.setEstoqueMinimo(produtoDTO.estoqueMinimo());
+
+        Produto produtoSalvo = produtoRepository.save(produto);
+        return produtoMapper.toProdutoResponse(produtoSalvo);
+    }
 
 
 }
