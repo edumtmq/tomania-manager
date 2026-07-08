@@ -1,7 +1,9 @@
 package com.tomania.tomania_manager.service;
 
 import com.tomania.tomania_manager.dto.DashboardResumoDTO;
+import com.tomania.tomania_manager.dto.ProdutoResponseDTO;
 import com.tomania.tomania_manager.entity.Produto;
+import com.tomania.tomania_manager.mapper.ProdutoMapper;
 import com.tomania.tomania_manager.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,9 @@ import java.util.List;
 public class DashboardService {
 
     private final ProdutoRepository produtoRepository;
+    private final ProdutoMapper produtoMapper;
 
+//    - > Gerar resumo do situacao do produto
     public DashboardResumoDTO gerarResumo() {
 
         List<Produto> produtosAtivos = produtoRepository.findByAtivoTrue();
@@ -39,5 +43,14 @@ public class DashboardService {
                 produtosComprar
         );
     }
+
+//    -> tabela principal
+    public List<ProdutoResponseDTO> listarProdutosSituacao() {
+        return produtoRepository.findByAtivoTrue()
+                .stream()
+                .map(produtoMapper::toProdutoResponse)
+                .toList();
+    }
+
 
 }

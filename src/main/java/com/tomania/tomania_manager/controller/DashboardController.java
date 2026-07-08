@@ -1,11 +1,14 @@
 package com.tomania.tomania_manager.controller;
 
 import com.tomania.tomania_manager.dto.DashboardResumoDTO;
+import com.tomania.tomania_manager.dto.ProdutoResponseDTO;
 import com.tomania.tomania_manager.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/dashboard")
@@ -18,4 +21,10 @@ public class DashboardController {
     public DashboardResumoDTO gerarResumo() {
         return dashboardService.gerarResumo();
     }
+
+    @GetMapping("/produtos-situacao")
+    public List<ProdutoResponseDTO> ListarProdutosSituacao() {
+        return dashboardService.listarProdutosSituacao();
+    }
+
 }
