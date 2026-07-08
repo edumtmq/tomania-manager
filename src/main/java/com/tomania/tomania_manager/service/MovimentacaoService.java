@@ -6,6 +6,10 @@ import com.tomania.tomania_manager.entity.Movimentacao;
 import com.tomania.tomania_manager.entity.Produto;
 import com.tomania.tomania_manager.enums.MotivoMovimentacao;
 import com.tomania.tomania_manager.enums.TipoMovimentacao;
+import com.tomania.tomania_manager.exception.EstoqueInsuficienteException;
+import com.tomania.tomania_manager.exception.MotivoMovimentacaoInvalidoException;
+import com.tomania.tomania_manager.exception.MovimentacaoNaoEncontradaException;
+import com.tomania.tomania_manager.exception.ProdutoNaoEncontradoException;
 import com.tomania.tomania_manager.mapper.MovimentacaoMapper;
 import com.tomania.tomania_manager.repository.MovimentacaoRepository;
 import com.tomania.tomania_manager.repository.ProdutoRepository;
@@ -33,7 +37,7 @@ public class MovimentacaoService {
         validarMotivoPorTipo(movimentacaoRequestDTO);
 
         Produto produto = produtoRepository.findById(movimentacaoRequestDTO.produtoId())
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
 
         if (movimentacaoRequestDTO.tipo() == TipoMovimentacao.ENTRADA) {
             produto.setEstoqueAtual(produto.getEstoqueAtual() + movimentacaoRequestDTO.quantidade());
@@ -41,7 +45,7 @@ public class MovimentacaoService {
 
         else if (movimentacaoRequestDTO.tipo() == TipoMovimentacao.SAIDA) {
             if (produto.getEstoqueAtual() < movimentacaoRequestDTO.quantidade()) {
-                throw new RuntimeException("Estoque insuficiente");
+                throw new EstoqueInsuficienteException("Estoque insuficiente");
             }
 
             produto.setEstoqueAtual(produto.getEstoqueAtual() - movimentacaoRequestDTO.quantidade());
@@ -65,7 +69,7 @@ public class MovimentacaoService {
 //    -> buscar movimentações por id
     public MovimentacaoResponseDTO buscarMovimentacaoPorId(Integer id) {
         Movimentacao movimentacao = movimentacaoRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Movimentação não encontrada"));
+                new MovimentacaoNaoEncontradaException("Movimentação não encontrada"));
 
         return movimentacaoMapper.toMovimentacaoResponse(movimentacao);
     }
@@ -78,14 +82,14 @@ public class MovimentacaoService {
                 .toList();
     }
 
-    public void validarMotivoPorTipo(MovimentacaoRequestDTO dto){
+    private void validarMotivoPorTipo(MovimentacaoRequestDTO dto){
         if(dto.tipo() == TipoMovimentacao.ENTRADA){
            if (
                    dto.motivo() != MotivoMovimentacao.COMPRA &&
                    dto.motivo() != MotivoMovimentacao.AJUSTE &&
                    dto.motivo() != MotivoMovimentacao.BONIFICACAO
            ){
-              throw new RuntimeException("Motivo inválido para movimentação de entrada");
+              throw new MotivoMovimentacaoInvalidoException("Motivo inválido para movimentação de entrada");
            }
         }
         if (dto.tipo() == TipoMovimentacao.SAIDA){
@@ -95,7 +99,7 @@ public class MovimentacaoService {
                     dto.motivo() != MotivoMovimentacao.AJUSTE &&
                     dto.motivo() != MotivoMovimentacao.VALIDADE
             ){
-                throw new RuntimeException("Motivo inválido para movimentação de saida");
+                throw new MotivoMovimentacaoInvalidoException("Motivo inválido para movimentação de saida");
             }
         }
     }

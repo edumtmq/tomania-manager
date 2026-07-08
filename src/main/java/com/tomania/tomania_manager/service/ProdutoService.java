@@ -3,6 +3,7 @@ package com.tomania.tomania_manager.service;
 import com.tomania.tomania_manager.dto.ProdutoRequestDTO;
 import com.tomania.tomania_manager.dto.ProdutoResponseDTO;
 import com.tomania.tomania_manager.entity.Produto;
+import com.tomania.tomania_manager.exception.ProdutoNaoEncontradoException;
 import com.tomania.tomania_manager.mapper.ProdutoMapper;
 import com.tomania.tomania_manager.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class ProdutoService {
 //  -> Buscar produto por Id
     public ProdutoResponseDTO buscarProdutoPorId(Integer id){
         Produto produto = produtoRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Produto não encontrado"));
+                new ProdutoNaoEncontradoException("Produto não encontrado"));
 
         return produtoMapper.toProdutoResponse(produto);
     }
