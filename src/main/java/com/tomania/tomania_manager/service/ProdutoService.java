@@ -30,11 +30,20 @@ public class ProdutoService {
     }
 //  -> Listar Produtos
     public List<ProdutoResponseDTO> listarProdutos(){
-        return produtoRepository.findAll()
+        return produtoRepository.findByAtivoTrue()
                 .stream()
                 .map(produtoMapper::toProdutoResponse)
                 .toList();
     }
+
+//    -> Listar produtos inativos
+    public List<ProdutoResponseDTO> listarProdutosInativos(){
+        return produtoRepository.findByAtivoFalse()
+                .stream()
+                .map(produtoMapper::toProdutoResponse)
+                .toList();
+    }
+
 //  -> Buscar produto por Id
     public ProdutoResponseDTO buscarProdutoPorId(Integer id){
         Produto produto = produtoRepository.findById(id).orElseThrow(() ->

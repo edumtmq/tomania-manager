@@ -26,6 +26,11 @@ public class ProdutoController {
         return produtoService.listarProdutos();
     }
 
+    @GetMapping("/inativos")
+    public List<ProdutoResponseDTO> listarProdutosInativos(){
+        return produtoService.listarProdutosInativos();
+    }
+
     @GetMapping("/{id}")
     public ProdutoResponseDTO buscarProdutoPorId(@PathVariable Integer id){
         return produtoService.buscarProdutoPorId(id);
