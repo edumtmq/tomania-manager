@@ -33,4 +33,9 @@ public class DashboardController {
         return dashboardService.listarMovimentacoesRecentes();
     }
 
+    @GetMapping("/sugestao-compras")
+    public List<ProdutoResponseDTO> listarSugestaoDeCompras(){
+        return dashboardService.listarSugestaoDeCompras();
+    }
+
 }

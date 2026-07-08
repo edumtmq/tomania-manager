@@ -65,4 +65,12 @@ public class DashboardService {
                 .toList();
     }
 
+//    -> sugestão de compras
+    public List<ProdutoResponseDTO> listarSugestaoDeCompras(){
+        return produtoRepository.findByAtivoTrue()
+                .stream()
+                .filter(produto -> produto.getEstoqueAtual() < produto.getEstoqueMinimo())
+                .map(produtoMapper::toProdutoResponse)
+                .toList();
+    }
 }
