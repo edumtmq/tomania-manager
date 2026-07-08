@@ -20,6 +20,7 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
         this.produtoMapper = produtoMapper;
     }
+
 //  -> Cadastro de Produtos
     public ProdutoResponseDTO cadastrarProduto(ProdutoRequestDTO produtoDTO){
         Produto produto = produtoMapper.toProduto(produtoDTO);
@@ -28,6 +29,7 @@ public class ProdutoService {
 
         return produtoMapper.toProdutoResponse(produtoSalvo);
     }
+
 //  -> Listar Produtos
     public List<ProdutoResponseDTO> listarProdutos(){
         return produtoRepository.findByAtivoTrue()
@@ -51,6 +53,7 @@ public class ProdutoService {
 
         return produtoMapper.toProdutoResponse(produto);
     }
+
 // -> Atualizar produto
     public ProdutoResponseDTO atualizarProduto(Integer id, ProdutoRequestDTO produtoDTO){
         Produto produto = produtoRepository.findById(id).orElseThrow(() ->

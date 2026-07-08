@@ -1,5 +1,6 @@
 package com.tomania.tomania_manager.service;
 
+import com.tomania.tomania_manager.dto.EntradaLoteRequestDTO;
 import com.tomania.tomania_manager.dto.MovimentacaoRequestDTO;
 import com.tomania.tomania_manager.dto.MovimentacaoResponseDTO;
 import com.tomania.tomania_manager.entity.Movimentacao;
@@ -17,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 @Service
 public class MovimentacaoService {
@@ -82,25 +84,42 @@ public class MovimentacaoService {
                 .toList();
     }
 
-    private void validarMotivoPorTipo(MovimentacaoRequestDTO dto){
-        if(dto.tipo() == TipoMovimentacao.ENTRADA){
-           if (
-                   dto.motivo() != MotivoMovimentacao.COMPRA &&
-                   dto.motivo() != MotivoMovimentacao.AJUSTE &&
-                   dto.motivo() != MotivoMovimentacao.BONIFICACAO
-           ){
-              throw new MotivoMovimentacaoInvalidoException("Motivo inválido para movimentação de entrada");
-           }
+    private void validarMotivoPorTipo(MovimentacaoRequestDTO dto) {
+        if (dto.tipo() == TipoMovimentacao.ENTRADA) {
+            if (
+                    dto.motivo() != MotivoMovimentacao.COMPRA &&
+                            dto.motivo() != MotivoMovimentacao.AJUSTE &&
+                            dto.motivo() != MotivoMovimentacao.BONIFICACAO
+            ) {
+                throw new MotivoMovimentacaoInvalidoException("Motivo inválido para movimentação de entrada");
+            }
         }
-        if (dto.tipo() == TipoMovimentacao.SAIDA){
-            if(
+        if (dto.tipo() == TipoMovimentacao.SAIDA) {
+            if (
                     dto.motivo() != MotivoMovimentacao.PRODUCAO &&
-                    dto.motivo() != MotivoMovimentacao.PERDA &&
-                    dto.motivo() != MotivoMovimentacao.AJUSTE &&
-                    dto.motivo() != MotivoMovimentacao.VALIDADE
-            ){
+                            dto.motivo() != MotivoMovimentacao.PERDA &&
+                            dto.motivo() != MotivoMovimentacao.AJUSTE &&
+                            dto.motivo() != MotivoMovimentacao.VALIDADE
+            ) {
                 throw new MotivoMovimentacaoInvalidoException("Motivo inválido para movimentação de saida");
             }
         }
+    }
+
+    @Transactional
+    public List<MovimentacaoResponseDTO> regitrarEntradaEmLote(List<EntradaLoteRequestDTO> entradas){
+        return entradas.stream()
+                .map(entrada -> {
+                            MovimentacaoRequestDTO movimentacaoRequestDTO = new MovimentacaoRequestDTO(
+                                    entrada.produtoId(),
+                                    TipoMovimentacao.ENTRADA,
+                                    MotivoMovimentacao.COMPRA,
+                                    entrada.quantidade(),
+                                    entrada.responsavel()
+                            );
+                            return registrarMovimentacao(movimentacaoRequestDTO);
+                    }
+                )
+                .toList();
     }
 }

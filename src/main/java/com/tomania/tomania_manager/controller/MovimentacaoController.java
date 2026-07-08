@@ -1,5 +1,6 @@
 package com.tomania.tomania_manager.controller;
 
+import com.tomania.tomania_manager.dto.EntradaLoteRequestDTO;
 import com.tomania.tomania_manager.dto.MovimentacaoRequestDTO;
 import com.tomania.tomania_manager.dto.MovimentacaoResponseDTO;
 import com.tomania.tomania_manager.service.MovimentacaoService;
@@ -19,6 +20,11 @@ public class MovimentacaoController {
     @PostMapping
     public MovimentacaoResponseDTO registrarMovimentacao(@RequestBody @Valid MovimentacaoRequestDTO movimentacaoRequestDTO){
         return movimentacaoService.registrarMovimentacao(movimentacaoRequestDTO);
+    }
+
+    @PostMapping("/entrada-lote")
+    public List<MovimentacaoResponseDTO> registrarEntradaEmLote(@RequestBody @Valid List<EntradaLoteRequestDTO> entradas){
+        return movimentacaoService.regitrarEntradaEmLote(entradas);
     }
 
     @GetMapping
