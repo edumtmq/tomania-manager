@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -46,5 +48,11 @@ public class MovimentacaoController {
     @GetMapping("/tipo/{tipo}")
     public List<MovimentacaoResponseDTO> listarMovimentacoesPorTipo(@PathVariable TipoMovimentacao tipo) {
         return movimentacaoService.listarPorTipo(tipo);
+    }
+
+    @GetMapping("/periodo")
+    public List<MovimentacaoResponseDTO> listarMovimentacoesPorPeriodo(@RequestParam LocalDateTime inicio,
+                                                                       @RequestParam LocalDateTime fim){
+        return movimentacaoService.listarPorPeriodo(inicio, fim);
     }
 }

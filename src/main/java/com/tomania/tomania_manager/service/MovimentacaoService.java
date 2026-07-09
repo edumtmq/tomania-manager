@@ -17,6 +17,8 @@ import com.tomania.tomania_manager.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -125,6 +127,15 @@ public class MovimentacaoService {
 
     public List<MovimentacaoResponseDTO> listarPorTipo(TipoMovimentacao tipo) {
         return movimentacaoRepository.findByTipo(tipo)
+                .stream()
+                .map(movimentacaoMapper::toMovimentacaoResponse)
+                .toList();
+    }
+
+    public List<MovimentacaoResponseDTO> listarPorPeriodo(
+            LocalDateTime inicio,
+            LocalDateTime fim) {
+        return movimentacaoRepository.findByDataMovimentacaoBetween(inicio, fim)
                 .stream()
                 .map(movimentacaoMapper::toMovimentacaoResponse)
                 .toList();

@@ -1,12 +1,11 @@
 package com.tomania.tomania_manager.repository;
 
 import com.tomania.tomania_manager.entity.Movimentacao;
-import com.tomania.tomania_manager.entity.Produto;
 import com.tomania.tomania_manager.enums.TipoMovimentacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Integer> {
 
@@ -16,5 +15,9 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Inte
 
     List<Movimentacao> findByTipo(TipoMovimentacao tipo);
 
+    List<Movimentacao> findByDataMovimentacaoBetween(
+            LocalDateTime inicio,
+            LocalDateTime fim
+   );
 
 }
