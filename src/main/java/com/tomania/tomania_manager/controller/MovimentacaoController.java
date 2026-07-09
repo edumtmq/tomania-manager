@@ -7,6 +7,7 @@ import com.tomania.tomania_manager.enums.TipoMovimentacao;
 import com.tomania.tomania_manager.service.MovimentacaoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -54,5 +55,15 @@ public class MovimentacaoController {
     public List<MovimentacaoResponseDTO> listarMovimentacoesPorPeriodo(@RequestParam LocalDateTime inicio,
                                                                        @RequestParam LocalDateTime fim){
         return movimentacaoService.listarPorPeriodo(inicio, fim);
+    }
+
+    @GetMapping("/filtro")
+    public List<MovimentacaoResponseDTO> listarMovimentacoesPorFiltro(
+            @RequestParam(required = false) Integer produtoId,
+            @RequestParam(required = false) TipoMovimentacao tipo,
+            @RequestParam(required = false) @DateTimeFormat LocalDateTime inicio,
+            @RequestParam(required = false) @DateTimeFormat LocalDateTime fim
+    ){
+        return movimentacaoService.filtroCombinado(produtoId, tipo, inicio, fim);
     }
 }
