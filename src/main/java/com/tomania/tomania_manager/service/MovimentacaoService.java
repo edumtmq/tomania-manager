@@ -3,7 +3,6 @@ package com.tomania.tomania_manager.service;
 import com.tomania.tomania_manager.dto.EntradaLoteRequestDTO;
 import com.tomania.tomania_manager.dto.MovimentacaoRequestDTO;
 import com.tomania.tomania_manager.dto.MovimentacaoResponseDTO;
-import com.tomania.tomania_manager.dto.ProdutoResponseDTO;
 import com.tomania.tomania_manager.entity.Movimentacao;
 import com.tomania.tomania_manager.entity.Produto;
 import com.tomania.tomania_manager.enums.MotivoMovimentacao;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -47,9 +45,7 @@ public class MovimentacaoService {
 
         if (movimentacaoRequestDTO.tipo() == TipoMovimentacao.ENTRADA) {
             produto.setEstoqueAtual(produto.getEstoqueAtual() + movimentacaoRequestDTO.quantidade());
-        }
-
-        else if (movimentacaoRequestDTO.tipo() == TipoMovimentacao.SAIDA) {
+        } else if (movimentacaoRequestDTO.tipo() == TipoMovimentacao.SAIDA) {
             if (produto.getEstoqueAtual() < movimentacaoRequestDTO.quantidade()) {
                 throw new EstoqueInsuficienteException("Estoque insuficiente");
             }
@@ -64,7 +60,7 @@ public class MovimentacaoService {
         return movimentacaoMapper.toMovimentacaoResponse(movimentacaoSalva);
     }
 
-//    -> Lista movimentações
+    //    -> Lista movimentações
     public List<MovimentacaoResponseDTO> listarMovimentacoes() {
         return movimentacaoRepository.findAll()
                 .stream()
@@ -72,7 +68,7 @@ public class MovimentacaoService {
                 .toList();
     }
 
-//    -> buscar movimentações por id
+    //    -> buscar movimentações por id
     public MovimentacaoResponseDTO buscarMovimentacaoPorId(Integer id) {
         Movimentacao movimentacao = movimentacaoRepository.findById(id).orElseThrow(() ->
                 new MovimentacaoNaoEncontradaException("Movimentação não encontrada"));
@@ -111,7 +107,7 @@ public class MovimentacaoService {
     }
 
     @Transactional
-    public List<MovimentacaoResponseDTO> regitrarEntradaEmLote(List<EntradaLoteRequestDTO> entradas){
+    public List<MovimentacaoResponseDTO> regitrarEntradaEmLote(List<EntradaLoteRequestDTO> entradas) {
         return entradas.stream()
                 .map(entrada -> {
                             MovimentacaoRequestDTO movimentacaoRequestDTO = new MovimentacaoRequestDTO(
@@ -122,7 +118,7 @@ public class MovimentacaoService {
                                     entrada.responsavel()
                             );
                             return registrarMovimentacao(movimentacaoRequestDTO);
-                    }
+                        }
                 )
                 .toList();
     }
@@ -143,47 +139,79 @@ public class MovimentacaoService {
                 .toList();
     }
 
-    public List<MovimentacaoResponseDTO> filtroCombinado( Integer produtoId,
-                                                          TipoMovimentacao tipo,
-                                                          LocalDateTime inicio,
-                                                          LocalDateTime fim) {
-
-        if (inicio == null || fim == null) {
-            LocalDate hoje = LocalDate.now();
-            inicio = hoje.atStartOfDay();
-            fim = hoje.atTime(23, 59, 59);
-        } else if (inicio != null && fim == null) {
-            fim = LocalDateTime.now();
-        } else if (inicio == null && fim != null) {
-            throw new RuntimeException("Informe a data inicial");
-        } else if (inicio.isAfter(fim)) {
-            throw new RuntimeException("A data inicial não pode ser maior que a data final");
-        }
+    public List<MovimentacaoResponseDTO> filtroCombinado(
+            Integer produtoId,
+            TipoMovimentacao tipo,
+            LocalDateTime inicio,
+            LocalDateTime fim) {
 
         if (produtoId != null) {
             produtoRepository.findById(produtoId).orElseThrow(() ->
-                    new ProdutoNaoEncontradoException("Produto não encontrado"));
+                            new ProdutoNaoEncontradoException("Produto não encontrado")
+                    );
+        }
+        if (inicio == null && fim == null) {
+            if (produtoId != null && tipo != null) {
+                return movimentacaoRepository
+                        .findByProduto_IdAndTipo(produtoId, tipo)
+                        .stream()
+                        .map(movimentacaoMapper::toMovimentacaoResponse)
+                        .toList();
+            }
+            if (produtoId != null) {
+                return movimentacaoRepository
+                        .findByProduto_Id(produtoId)
+                        .stream()
+                        .map(movimentacaoMapper::toMovimentacaoResponse)
+                        .toList();
+            }
+            if (tipo != null) {
+                return movimentacaoRepository
+                        .findByTipo(tipo)
+                        .stream()
+                        .map(movimentacaoMapper::toMovimentacaoResponse)
+                        .toList();
+            }
+            return movimentacaoRepository
+                    .findAll()
+                    .stream()
+                    .map(movimentacaoMapper::toMovimentacaoResponse)
+                    .toList();
+        }
+        if (inicio == null) {
+            throw new RuntimeException(
+                    "Informe a data inicial"
+            );
+        }
+        if (fim == null) {
+            fim = LocalDateTime.now();
+        }
+
+        if (inicio.isAfter(fim)) {
+            throw new RuntimeException(
+                    "A data inicial não pode ser maior que a data final"
+            );
         }
 
         List<Movimentacao> movimentacoes;
 
         if (produtoId != null && tipo != null) {
-            movimentacoes = movimentacaoRepository.findByProduto_IdAndTipoAndDataMovimentacaoBetween
-                    (produtoId, tipo, inicio, fim);
+            movimentacoes =
+                    movimentacaoRepository
+                            .findByProduto_IdAndTipoAndDataMovimentacaoBetween(produtoId, tipo, inicio, fim);
+        } else if (produtoId != null) {
+            movimentacoes =
+                    movimentacaoRepository
+                            .findByProduto_IdAndDataMovimentacaoBetween(produtoId, inicio, fim);
+        } else if (tipo != null) {
+            movimentacoes =
+                    movimentacaoRepository
+                            .findByTipoAndDataMovimentacaoBetween(tipo, inicio, fim);
+        } else {
+            movimentacoes =
+                    movimentacaoRepository
+                            .findByDataMovimentacaoBetween(inicio, fim);
         }
-        else if (produtoId != null) {
-            movimentacoes = movimentacaoRepository.findByProduto_IdAndDataMovimentacaoBetween
-                    (produtoId, inicio, fim);
-        }
-        else if (tipo != null) {
-            movimentacoes = movimentacaoRepository.findByTipoAndDataMovimentacaoBetween
-                    (tipo, inicio, fim);
-        }
-        else {
-            movimentacoes = movimentacaoRepository.findByDataMovimentacaoBetween
-                    (inicio, fim);
-        }
-
         return movimentacoes.stream()
                 .map(movimentacaoMapper::toMovimentacaoResponse)
                 .toList();

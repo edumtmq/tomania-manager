@@ -28,4 +28,9 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Inte
 
     List<Movimentacao> findByProduto_IdAndTipoAndDataMovimentacaoBetween
             (Integer produtoId, TipoMovimentacao tipo, LocalDateTime inicio, LocalDateTime fim);
+
+    List<Movimentacao> findByProduto_IdAndTipo(
+            Integer produtoId,
+            TipoMovimentacao tipo
+    );
 }
