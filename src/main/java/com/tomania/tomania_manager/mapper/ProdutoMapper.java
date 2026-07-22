@@ -8,20 +8,37 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProdutoMapper {
-    private StatusProduto calcularStatus(Produto produto){
-        if (produto.getEstoqueAtual() < produto.getEstoqueMinimo()){
+
+    private static final int MARGEM_ATENCAO = 2;
+
+    private StatusProduto calcularStatus(
+            Produto produto
+    ) {
+        int estoqueAtual =
+                produto.getEstoqueAtual();
+
+        int estoqueMinimo =
+                produto.getEstoqueMinimo();
+
+        if (estoqueAtual <= estoqueMinimo) {
             return StatusProduto.COMPRAR;
         }
 
-        if (produto.getEstoqueAtual().equals(produto.getEstoqueMinimo())) {
+        if (
+                estoqueAtual
+                        <= estoqueMinimo
+                        + MARGEM_ATENCAO
+        ) {
             return StatusProduto.ATENCAO;
         }
 
         return StatusProduto.OK;
     }
 
-//    -> Transforma a entidade em DTO de resposta
-    public ProdutoResponseDTO toProdutoResponse(Produto produto){
+    // Transforma a entidade em DTO de resposta
+    public ProdutoResponseDTO toProdutoResponse(
+            Produto produto
+    ) {
         return new ProdutoResponseDTO(
                 produto.getId(),
                 produto.getNome(),
@@ -31,12 +48,19 @@ public class ProdutoMapper {
                 calcularStatus(produto)
         );
     }
-//   -> Trasnforma DTO de Requisição em entidade p salvar no banco
 
-    public Produto toProduto(ProdutoRequestDTO dto){
+    // Transforma o DTO de requisição em entidade
+    public Produto toProduto(
+            ProdutoRequestDTO dto
+    ) {
         Produto produto = new Produto();
+
         produto.setNome(dto.nome());
-        produto.setEstoqueMinimo(dto.estoqueMinimo());
+
+        produto.setEstoqueMinimo(
+                dto.estoqueMinimo()
+        );
+
         return produto;
     }
 }
